@@ -1,0 +1,40 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pyc
+*.pdb
+
+# Virtual environment
+venv/
+env/
+ENV/
+.venv/
+
+# Pipenv
+Pipfile.lock
+
+# Poetry
+poetry.lock
+
+# Editor/IDE
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# FastAPI / Uvicorn
+*.db
+*.sqlite3
+
+# Pinecone keys / secrets (never commit!)
+*.env
+.env
