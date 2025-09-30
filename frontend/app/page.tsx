@@ -143,7 +143,7 @@ export default function Home() {
               <strong>URL:</strong> <span className="break-all">{searchInfo.url}</span>
             </p>
             <p className="text-sm text-blue-700">
-              <strong>Query:</strong> "{searchInfo.query}"
+              <strong>Query:</strong> &quot;{searchInfo.query}&quot;
             </p>
           </div>
         )}
