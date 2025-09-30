@@ -56,7 +56,7 @@ export default function Home() {
     setError(null);
 
     try {
-      const res = await fetch("http://localhost:8000/search", {
+      const res = await fetch("https://website-content-search-hf24.onrender.com/search", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ url, query }),
