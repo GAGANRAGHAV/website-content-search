@@ -15,11 +15,36 @@ interface SearchResponse {
   error?: string;
 }
 
+// ✅ Helper to highlight query words
+function highlightText(text: string, query: string) {
+  if (!query) return text;
+
+  // Split query into words, escape regex chars, and join with |
+  const words = query
+    .split(/\s+/)
+    .filter(Boolean)
+    .map((w) => w.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"));
+
+  if (words.length === 0) return text;
+
+  const regex = new RegExp(`(${words.join("|")})`, "gi");
+
+  return text.split(regex).map((part, i) =>
+    regex.test(part) ? (
+      <mark key={i} className="bg-yellow-200 text-black rounded px-1">
+        {part}
+      </mark>
+    ) : (
+      part
+    )
+  );
+}
+
 export default function Home() {
   const [url, setUrl] = useState("");
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<SearchResult[]>([]);
-  const [searchInfo, setSearchInfo] = useState<{url: string, query: string, total: number} | null>(null);
+  const [searchInfo, setSearchInfo] = useState<{ url: string; query: string; total: number } | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -29,16 +54,16 @@ export default function Home() {
     setResults([]);
     setSearchInfo(null);
     setError(null);
-    
+
     try {
       const res = await fetch("http://localhost:8000/search", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ url, query }),
       });
-      
+
       const data: SearchResponse = await res.json();
-      
+
       if (data.error) {
         setError(data.error);
       } else {
@@ -46,14 +71,14 @@ export default function Home() {
         setSearchInfo({
           url: data.url,
           query: data.query,
-          total: data.total_matches
+          total: data.total_matches,
         });
       }
     } catch (err) {
       setError("Failed to connect to the server. Please try again.");
       console.error(err);
     }
-    
+
     setLoading(false);
   };
 
@@ -140,14 +165,14 @@ export default function Home() {
                     Relevance: {(result.relevance_score * 100).toFixed(1)}%
                   </span>
                 </div>
-                
-                {/* Content */}
+
+                {/* Content with Highlight */}
                 <div className="text-gray-800">
                   <p className="leading-relaxed whitespace-pre-wrap break-words">
-                    {result.content}
+                    {highlightText(result.content, query)}
                   </p>
                 </div>
-                
+
                 {/* Chunk ID (for debugging) */}
                 <div className="mt-3 pt-3 border-t border-gray-100">
                   <span className="text-xs text-gray-500">
